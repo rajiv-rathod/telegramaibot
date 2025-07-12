@@ -1,0 +1,8 @@
+telethon
+flask
+python-dotenv
+requests
+aiohttp
+openai
+python-telegram-bot==20.8
+nest_asyncio
