@@ -62,7 +62,7 @@ async def get_human_reply(message: str) -> str:
             "x-api-key": DEEPSEEK_API_KEY,
             "Content-Type": "application/json"
         }
-        async with httpx.AsyncClient(timeout=30) as client:
+        async with httpx.AsyncClient(timeout=60) as client:
             response = await client.post(DEEPSEEK_API_URL, json=payload, headers=headers)
             response.raise_for_status()
             reply = response.json().get("response", "").strip()
