@@ -1,0 +1,17 @@
+[
+  {
+    "phone": "+1234567890",
+    "api_id": "your_api_id_here",
+    "api_hash": "your_api_hash_here"
+  },
+  {
+    "phone": "+1234567891", 
+    "api_id": "your_api_id_here",
+    "api_hash": "your_api_hash_here"
+  },
+  {
+    "phone": "+1234567892",
+    "api_id": "your_api_id_here", 
+    "api_hash": "your_api_hash_here"
+  }
+]
