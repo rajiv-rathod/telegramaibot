@@ -1,62 +1,77 @@
 [
   {
-    "role": "user",
-    "content": "Have you watched Supernatural?",
-    "timestamp": "2025-08-09T11:00:00.686217"
-  },
-  {
     "role": "assistant",
-    "content": "Ya, wallah! Supernatural is like if salt bae sprinkled chaos instead of salt. Demons, angels, and non-stop drama\u2014it's the ultimate late-night binge material! Dean and Sam got me feeling like I'm part of the squad. \ud83d\udd2e\ud83d\ude0e",
-    "timestamp": "2025-08-09T11:00:00.686900"
+    "content": "no cap",
+    "timestamp": "2025-09-05T14:31:53.229121+00:00"
   },
   {
     "role": "user",
-    "content": "?",
-    "timestamp": "2025-08-09T11:00:24.473464"
+    "content": "bruh lol",
+    "timestamp": "2025-09-05T14:32:07.919890+00:00"
   },
   {
     "role": "assistant",
-    "content": "What\u2019s up? Need a Supernatural recap or just chilling on chaos vibes? \ud83d\ude04",
-    "timestamp": "2025-08-09T11:00:24.474993"
+    "content": "the way i WHEEZED",
+    "timestamp": "2025-09-05T14:32:07.920321+00:00"
   },
   {
     "role": "user",
-    "content": "@Sylviamappas hey baby gurllll",
-    "timestamp": "2025-08-09T11:01:33.391370"
+    "content": "Better",
+    "timestamp": "2025-09-05T14:32:53.082931+00:00"
   },
   {
     "role": "assistant",
-    "content": "Hey hey, what\u2019s poppin\u2019, habibi? Ready to cause some chaos or just vibing today? \ud83d\ude0e\u2728",
-    "timestamp": "2025-08-09T11:01:33.391883"
+    "content": "exactly",
+    "timestamp": "2025-09-05T14:32:53.083347+00:00"
   },
   {
     "role": "user",
-    "content": "lets play tick tack toe\n\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b0\u2846\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28fe\u2846\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b8\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28ff\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b8\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28ff\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2880\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28f8\u28c7\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28ff\u28c7\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u2840\u2800\u2800\n\u2800\u2800\u2819\u281b\u281b\u281b\u281b\u281b\u281b\u28bb\u285f\u281b\u281b\u281b\u281b\u281b\u281b\u281b\u281b\u28ff\u285f\u281b\u281b\u281b\u281b\u281b\u281b\u2803\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b8\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28ff\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b8\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28ff\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b8\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28ff\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2880\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28f8\u28c7\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u28ff\u28c7\u28c0\u28c0\u28c0\u28c0\u28c0\u28c0\u2840\u2800\u2800\n\u2800\u2800\u2808\u2809\u2809\u2809\u2809\u2809\u2809\u28b9\u284f\u2809\u2809\u2809\u2809\u2809\u2809\u2809\u2809\u28ff\u284f\u2809\u2809\u2809\u2809\u2809\u2809\u2801\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b8\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28ff\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28b8\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28ff\u2847\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2838\u2807\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u28bf\u2807\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800\u2800",
-    "timestamp": "2025-08-09T11:03:10.155466"
+    "content": "So, what are you interested in?",
+    "timestamp": "2025-09-05T14:33:13.882607+00:00"
   },
   {
     "role": "assistant",
-    "content": "Yalla! I'll throw down an X in the top left. Show me what you got, habibi! \ud83d\ude0e\u2716\ufe0f\ud83c\udf00",
-    "timestamp": "2025-08-09T11:03:10.156468"
+    "content": "omg psycho paws you\u2019re so right about diving into interests! \ud83d\ude04 i'm all about gaming, especially rpgs like baldur's gate 3 and indie games also love creating juicy lore for astra nova!",
+    "timestamp": "2025-09-05T14:33:13.883131+00:00"
   },
   {
     "role": "user",
-    "content": "lol I WIN",
-    "timestamp": "2025-08-09T11:03:37.291548"
+    "content": "Oh so you like dungeons and dragons?",
+    "timestamp": "2025-09-05T14:33:53.938334+00:00"
   },
   {
     "role": "assistant",
-    "content": "Wallah, you got me good! \ud83d\ude02 Guess I need to step up my tic-tac-toe game! Rematch or victory dance time? \ud83d\udc83\ud83d\udd25",
-    "timestamp": "2025-08-09T11:03:37.291959"
+    "content": "yesss! dungeons and dragons is where my imagination goes wild, wallah! the chaos, the storytelling,",
+    "timestamp": "2025-09-05T14:33:53.938894+00:00"
   },
   {
     "role": "user",
-    "content": "@Sylviamappas hi",
-    "timestamp": "2025-08-11T09:42:35.123271"
+    "content": "Then you'd really like a game called tiny Tina's wonderlands. It's a spin off from borderlands, and it's very similar to dungeons and dragons",
+    "timestamp": "2025-09-05T14:34:42.043083+00:00"
   },
   {
     "role": "assistant",
-    "content": "Heyy! What's cookin', good lookin'? \ud83c\udf1f Ready to dive into some chaos or just chillaxin\u2019? \ud83d\ude0e\ud83c\udfae",
-    "timestamp": "2025-08-11T09:42:35.123924"
+    "content": "omg psycho paws you\u2019re so right about tiny tina's wonderlands! \ud83e\udd29 it's got that chaotic",
+    "timestamp": "2025-09-05T14:34:42.043534+00:00"
+  },
+  {
+    "role": "user",
+    "content": "It's still not finishing sentences tho @RajivRathod",
+    "timestamp": "2025-09-05T14:35:15.894451+00:00"
+  },
+  {
+    "role": "assistant",
+    "content": "bestie you're here",
+    "timestamp": "2025-09-05T14:35:15.894912+00:00"
+  },
+  {
+    "role": "user",
+    "content": "..",
+    "timestamp": "2025-09-05T14:38:52.623915+00:00"
+  },
+  {
+    "role": "assistant",
+    "content": "lol psycho paws my bad for the cliffhanger \ud83d\ude05 tiny tina\u2019s wonderlands is all about",
+    "timestamp": "2025-09-05T14:38:52.624335+00:00"
   }
 ]

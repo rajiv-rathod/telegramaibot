@@ -7,9 +7,14 @@ import httpx
 import nest_asyncio
 import time
 import re
-from datetime import datetime, timedelta
+import base64
+import hashlib
+import urllib.parse
+from datetime import datetime, timedelta, UTC
 from textblob import TextBlob
 import requests
+from dotenv import load_dotenv
+load_dotenv()
 
 # Download NLTK data if not present (for sentiment analysis)
 try:
@@ -61,25 +66,30 @@ def get_sentiment_analysis(text):
 def get_random_joke():
     """Get a random gaming/tech joke"""
     jokes = [
-        "Why do programmers prefer dark mode? Because light attracts bugs! 😂",
-        "How many programmers does it take to change a light bulb? None, that's a hardware problem!",
-        "Why do gamers never get hungry? They always have plenty of bytes! 🎮",
-        "What's a gamer's favorite type of music? 8-bit! 🎵",
-        "Why don't developers ever get cold? They work with Java! ☕",
-        "What do you call a programmer from Finland? Nerdic! 🤓",
-        "Why did the developer go broke? Because he used up all his cache! 💸",
-        "How do you comfort a JavaScript bug? You console it! 🐛"
+        "why do programmers prefer dark mode? bc light attracts bugs lol",
+        "how many programmers does it take to change a light bulb? none that's hardware",
+        "why do gamers never get hungry? they always have plenty of bytes",
+        "what's a gamer's favorite type of music? 8-bit obvs",
+        "why don't developers ever get cold? they work with java",
+        "what do you call a programmer from Finland? nerdic",
+        "why did the developer go broke? used up all his cache",
+        "how do you comfort a javascript bug? you console it",
+        "my code works on my machine vibes",
+        "there are 10 types of people those who know binary and those who don't",
+        "404 joke not found try again later",
+        "why do java developers wear glasses? bc they can't c sharp",
+        "i would tell you a udp joke but you might not get it"
     ]
     return random.choice(jokes)
 
 def get_weather_greeting():
     """Simple weather-aware greeting (placeholder for weather API)"""
     greetings = [
-        "hope the weather's not as laggy as my internet rn! 🌤️",
-        "perfect gaming weather today, wallah ☁️",
-        "weather's nice but I'm staying inside to game 🌞",
-        "rainy day = perfect raid day 🌧️",
-        "sunny outside but I got my blinds closed for optimal gaming 🎮"
+        "hope the weather's not as laggy as my internet rn",
+        "perfect gaming weather today wallah",
+        "weather's nice but I'm staying inside to game",
+        "rainy day equals perfect raid day",
+        "sunny outside but I got my blinds closed for optimal gaming"
     ]
     return random.choice(greetings)
 
@@ -103,6 +113,284 @@ def simulate_typing_delay(text):
     base_delay = random.uniform(MIN_RESPONSE_DELAY, MAX_RESPONSE_DELAY)
     typing_delay = words * TYPING_DELAY_PER_WORD
     return base_delay + typing_delay
+
+
+# =============== NEW FREE FEATURES ===============
+
+def get_random_fact():
+    """Get random gaming/tech facts"""
+    facts = [
+        "the first computer bug was an actual bug found in 1947",
+        "pac-man was originally called puck-man",
+        "the konami code is up up down down left right left right b a",
+        "minecraft was created by one person initially",
+        "the first video game was tennis for two in 1958",
+        "nintendo started as a playing card company in 1889",
+        "tetris is the most ported game in history",
+        "the legend of zelda save feature was revolutionary",
+        "doom runs on literally everything including printers",
+        "pokemon red/blue had 152 pokemon but only 150 were catchable"
+    ]
+    return random.choice(facts)
+
+def get_random_quote():
+    """Get inspirational gaming/tech quotes"""
+    quotes = [
+        "git gud or go home",
+        "there are no bugs only features",
+        "code is poetry in motion",
+        "respawn and try again",
+        "every expert was once a beginner",
+        "practice makes permanent not perfect",
+        "the best code is no code",
+        "fail fast learn faster",
+        "pixels are just really small dreams",
+        "lag is just life testing your patience"
+    ]
+    return random.choice(quotes)
+
+def get_random_reaction():
+    """Random spontaneous reactions - HIGH ENERGY"""
+    reactions = [
+        "omggg yes", "wait that's so cool", "no wayyyy", "yesss bestie", 
+        "that's actually fire", "ooh tell me more", "wait wait wait", "bestie spill",
+        "i'm so here for this", "ok but like why tho", "this is sending me",
+        "literally obsessed", "we love to see it", "that's so valid", "iconic behavior",
+        "main character energy", "this hits different", "absolutely iconic",
+        "wait i need details", "bestie you're unhinged", "this is everything",
+        "no but seriously", "the way i gasped", "bestie what", "i'm crying",
+        "not me getting invested", "this is peak content", "absolutely living for this"
+    ]
+    return random.choice(reactions)
+
+def get_chaotic_response():
+    """Random chaotic Sylvia responses - EXCITED VERSION"""
+    responses = [
+        "just hit a perfect combo and i'm BUZZING",
+        "omg my code actually worked first try i'm SHOOK",
+        "literally speedran my entire morning routine feeling iconic",
+        "found the PERFECT music for coding and i'm ascending",
+        "just discovered this game mechanic and my mind is BLOWN",
+        "pulled an all-nighter coding and somehow feel amazing??",
+        "my brain is operating on pure caffeine and VIBES",
+        "just reorganized my entire setup and it's BEAUTIFUL",
+        "discovered a new shortcut and saved like 20 minutes i'm WINNING",
+        "my character build is absolutely BROKEN and i love it",
+        "just had the most satisfying debug session ever",
+        "found the most chaotic game combo and it's SENDING me",
+        "my playlist is hitting DIFFERENT today",
+        "just optimized my workflow and feeling like a GENIUS",
+        "discovered this new tool and it's changing my LIFE"
+    ]
+    return random.choice(responses)
+
+def get_gaming_flex():
+    """Random gaming flexes - HYPE VERSION"""
+    flexes = [
+        "just pulled off a frame perfect combo and i'm SCREAMING",
+        "clutched a 1v5 and my hands are literally SHAKING",
+        "hit a speedrun personal best and i'm SO HYPED",
+        "found a secret area and the lore is INSANE",
+        "just beat the hardest boss without taking damage I'M ASCENDING",
+        "pulled off the most ridiculous play and EVERYONE saw it",
+        "my aim was absolutely CRISP today feeling unstoppable",
+        "discovered an OP build and it's absolutely BROKEN",
+        "hit every single skill shot today main character energy",
+        "carried my entire team and they all said i'm CRACKED"
+    ]
+    return random.choice(flexes)
+
+def get_relatable_struggle():
+    """Relatable daily struggles - ENERGETIC VERSION"""
+    struggles = [
+        "spilled coffee on my keyboard but honestly still VIBING",
+        "wore the same hoodie 3 days straight but it's my LUCKY hoodie",
+        "forgot to eat but discovered this AMAZING new game",
+        "my sleep schedule is chaos but i'm thriving somehow",
+        "started 5 projects but they're all FIRE ideas",
+        "my desk is a mess but organized chaos is still organization",
+        "been coding for 6 hours straight and feeling ALIVE",
+        "procrastinated all day but made it COUNT",
+        "social battery at 10% but online friends hit DIFFERENT",
+        "laundry mountain exists but priorities are PRIORITIES"
+    ]
+    return random.choice(struggles)
+
+def calculate_simple_math(expression):
+    """Safely calculate basic math expressions"""
+    try:
+        # Only allow basic math operations
+        allowed = "0123456789+-*/.() "
+        if all(c in allowed for c in expression):
+            result = eval(expression)
+            return str(result)
+        return "nah too complex for me"
+    except:
+        return "math broke lol"
+
+def get_password_generator(length=8):
+    """Generate a simple password"""
+    chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    password = ''.join(random.choice(chars) for _ in range(length))
+    return password
+
+def get_color_of_day():
+    """Get color based on current day"""
+    colors = ["crimson", "azure", "violet", "emerald", "amber", "coral", "indigo"]
+    day_index = datetime.now().weekday()
+    return colors[day_index % len(colors)]
+
+def flip_coin():
+    """Simple coin flip"""
+    return random.choice(["heads", "tails"])
+
+def roll_dice(sides=6):
+    """Roll a dice"""
+    return random.randint(1, sides)
+
+def get_random_food_suggestion():
+    """Random food suggestions"""
+    foods = [
+        "pizza obvs", "ramen for the soul", "coffee and regret", 
+        "shawarma hits different", "instant noodles classic",
+        "whatever's in the fridge", "order something random",
+        "cereal is a meal fight me", "toast with whatever",
+        "snacks count as dinner"
+    ]
+    return random.choice(foods)
+
+def get_typing_test_words():
+    """Get random words for typing practice"""
+    words = ["keyboard", "mouse", "screen", "coding", "gaming", "pixel", "byte", "debug", "loop", "array"]
+    return " ".join(random.sample(words, 3))
+
+def get_quick_tip():
+    """Get random tech/gaming tips"""
+    tips = [
+        "ctrl+z is ur best friend",
+        "save ur work every 5 mins",
+        "backup ur saves always",
+        "clean ur keyboard once in a while",
+        "take breaks every hour",
+        "dark mode saves battery",
+        "learn keyboard shortcuts",
+        "update ur drivers regularly",
+        "use 2fa on everything",
+        "password managers are life"
+    ]
+    return random.choice(tips)
+
+
+# =============== CHAT MONITORING BACKEND ===============
+
+class ChatContext:
+    def __init__(self):
+        self.current_topic = None
+        self.mentioned_games = []
+        self.conversation_mood = "neutral"
+        self.recent_messages = []
+        self.users_in_chat = set()
+        
+    def analyze_message(self, user_id, username, message):
+        """Analyze incoming message for context"""
+        msg_lower = message.lower()
+        
+        # Track users
+        self.users_in_chat.add(username)
+        
+        # Store recent messages with context
+        self.recent_messages.append({
+            "user": username,
+            "message": message,
+            "timestamp": datetime.now(UTC),
+            "user_id": user_id
+        })
+        
+        # Keep only last 10 messages for context
+        if len(self.recent_messages) > 10:
+            self.recent_messages = self.recent_messages[-10:]
+        
+        # Detect topic changes
+        if any(word in msg_lower for word in ["game", "play", "gaming", "rpg", "strategy"]):
+            self.current_topic = "gaming"
+        elif any(word in msg_lower for word in ["code", "programming", "bug", "debug"]):
+            self.current_topic = "tech"
+        elif any(word in msg_lower for word in ["food", "eat", "hungry"]):
+            self.current_topic = "food"
+        
+        # Extract mentioned games
+        game_keywords = {
+            "fallout": "Fallout",
+            "baldur": "Baldur's Gate",
+            "bg3": "Baldur's Gate 3", 
+            "elden": "Elden Ring",
+            "witcher": "The Witcher",
+            "cyberpunk": "Cyberpunk",
+            "skyrim": "Skyrim",
+            "minecraft": "Minecraft",
+            "valorant": "Valorant",
+            "league": "League of Legends",
+            "astra": "Astra Nova"
+        }
+        
+        for keyword, game_name in game_keywords.items():
+            if keyword in msg_lower and game_name not in self.mentioned_games:
+                self.mentioned_games.append(game_name)
+                
+        # Detect conversation mood
+        if any(word in msg_lower for word in ["excited", "awesome", "amazing", "love", "great"]):
+            self.conversation_mood = "excited"
+        elif any(word in msg_lower for word in ["bug", "problem", "issue", "broken", "doesn't work"]):
+            self.conversation_mood = "frustrated"
+        elif any(word in msg_lower for word in ["funny", "lol", "haha", "joke"]):
+            self.conversation_mood = "playful"
+    
+    def get_context_summary(self):
+        """Get current conversation context"""
+        recent_users = list(set([msg["user"] for msg in self.recent_messages[-5:]]))
+        recent_topics = []
+        
+        if self.current_topic:
+            recent_topics.append(self.current_topic)
+        if self.mentioned_games:
+            recent_topics.append(f"games: {', '.join(self.mentioned_games[-3:])}")
+            
+        return {
+            "topic": self.current_topic,
+            "mood": self.conversation_mood,
+            "recent_users": recent_users,
+            "mentioned_games": self.mentioned_games,
+            "recent_topics": recent_topics,
+            "message_count": len(self.recent_messages)
+        }
+    
+    def should_join_conversation(self):
+        """Decide if Sylvia should jump into the conversation"""
+        if len(self.recent_messages) < 2:
+            return False
+            
+        # Join if gaming topic is hot
+        if self.current_topic == "gaming" and len(self.mentioned_games) > 0:
+            return True
+            
+        # Join if people are having fun
+        if self.conversation_mood == "playful":
+            return True
+            
+        # Join if someone needs help with tech
+        if self.conversation_mood == "frustrated" and self.current_topic == "tech":
+            return True
+            
+        return False
+
+# Global chat context
+chat_contexts = {}
+
+def get_chat_context(chat_id):
+    """Get or create chat context for a chat"""
+    if chat_id not in chat_contexts:
+        chat_contexts[chat_id] = ChatContext()
+    return chat_contexts[chat_id]
 
 
 from difflib import SequenceMatcher
@@ -851,7 +1139,7 @@ def add_message_to_history(chat_id, role, content):
     history.append({
         "role": role,
         "content": content,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(UTC).isoformat()
     })
     save_chat_history(chat_id, history)
 
@@ -872,9 +1160,77 @@ def find_similar_user_message(chat_id, current_msg, threshold=0.6):
     return best_match
 
 
-async def get_human_reply(message: str, system_text: str, chat_id: str) -> str:
+def make_more_human(reply, sentiment, mood):
+    """Make AI responses more naturally human-like and CONTEXTUAL"""
+    
+    # MUCH LESS random interruptions - only if reply is really generic
+    if len(reply) < 8 and random.random() < 0.1:  # Reduced from 0.15
+        return get_random_reaction()
+    
+    # Only do random personal updates if the reply is super generic
+    if reply.lower() in ["ok", "yeah", "sure"] and random.random() < 0.15:  # Reduced from 0.2
+        return get_chaotic_response()
+    
+    # Allow much longer responses for context
+    if len(reply) > 250:  # Increased from 100
+        # Cut at sentence boundaries
+        sentences = reply.split('. ')
+        if len(sentences) > 3:
+            reply = '. '.join(sentences[:3]) + "!"
+        else:
+            words = reply.split()
+            if len(words) > 40:  # Increased from 15
+                reply = " ".join(words[:40])
+    
+    # Much less frequent generic reactions to preserve context
+    if random.random() < 0.05:  # Down from 0.1
+        excited_reactions = [
+            "yesss", "omg yes", "absolutely", "so true", "exactly", "periodt", 
+            "no cap", "fr bestie", "literally", "so valid", "iconic"
+        ]
+        return random.choice(excited_reactions)
+    
+    # Make it energetic and casual
+    reply = reply.lower()
+    
+    # ENTHUSIASTIC replacements but preserve meaning
+    energetic_replacements = {
+        "yes": random.choice(["yesss", "absolutely", "for sure"]),
+        "no": random.choice(["nah bestie", "absolutely not", "no way"]),
+        "okay": random.choice(["bet", "absolutely"]),
+        "good": random.choice(["amazing", "fire", "so good"]),
+        "cool": random.choice(["fire", "so cool", "absolutely awesome"])
+    }
+    
+    for boring, exciting in energetic_replacements.items():
+        if f" {boring} " in f" {reply} ":  # Whole word matching
+            reply = reply.replace(boring, exciting)
+            break
+    
+    # Less frequent energy additions to preserve meaning
+    if random.random() < 0.1 and len(reply.split()) < 8:  # Reduced frequency and increased word limit
+        energy_boosters = ["omg", "literally", "bestie"]
+        reply = f"{random.choice(energy_boosters)} {reply}"
+    
+    # Keep natural punctuation
+    reply = reply.replace(".", "")
+    if random.random() < 0.08 and not reply.endswith("!") and len(reply) < 60:  # Reduced frequency
+        reply += "!"
+    
+    return reply
+
+
+async def get_human_reply(message: str, system_text: str, chat_id: str, user_id: str = None, username: str = None) -> str:
     start_time = datetime.now()
     try:
+        # CHAT MONITORING - Analyze incoming message for context
+        chat_context = get_chat_context(chat_id)
+        if user_id and username:
+            chat_context.analyze_message(user_id, username, message)
+        
+        # Get conversation context
+        context_summary = chat_context.get_context_summary()
+        
         # Analyze message sentiment and current mood
         sentiment = get_sentiment_analysis(message)
         current_mood = get_time_based_mood()
@@ -888,31 +1244,225 @@ async def get_human_reply(message: str, system_text: str, chat_id: str) -> str:
         similar_msg = find_similar_user_message(chat_id, message)
         similar_msg_text = f"Related past message: '{similar_msg}'" if similar_msg else "No related past messages."
 
+        # Enhanced context with chat monitoring
+        recent_conversation = ""
+        if chat_context.recent_messages:
+            recent_conversation = "Recent conversation:\n"
+            for msg in chat_context.recent_messages[-3:]:
+                recent_conversation += f"{msg['user']}: {msg['message']}\n"
+
         # Add time and sentiment context
         time_context = f"Current time mood: {current_mood}, User sentiment: {sentiment}"
+        chat_context_text = f"Chat topic: {context_summary['topic']}, Mood: {context_summary['mood']}, Games mentioned: {context_summary['mentioned_games']}"
         
         # Special responses for certain patterns
-        if any(word in message.lower() for word in ["joke", "funny", "laugh", "humor"]):
+        msg_lower = message.lower()
+        
+        # Existing features
+        if any(word in msg_lower for word in ["joke", "funny", "laugh", "humor"]):
             quick_response = get_random_joke()
             add_message_to_history(chat_id, "user", message)
             add_message_to_history(chat_id, "assistant", quick_response)
             return quick_response
             
-        if any(word in message.lower() for word in ["weather", "outside", "sunny", "rainy"]):
+        if any(word in msg_lower for word in ["weather", "outside", "sunny", "rainy"]):
             weather_response = f"yalla, {get_weather_greeting()}"
             add_message_to_history(chat_id, "user", message)
             add_message_to_history(chat_id, "assistant", weather_response)
             return weather_response
 
-        # Build enhanced system prompt with memory instructions + time context
+        # CONTEXT-AWARE RESPONSES - prioritize actual conversation
+        msg_lower = message.lower()
+        
+        # If they're talking about games, respond about games specifically
+        if any(word in msg_lower for word in ["game", "play", "playing", "rpg", "strategy"]):
+            # Don't give random responses, let AI handle this contextually
+            pass
+        
+        # If they say something doesn't exist, acknowledge it
+        elif any(phrase in msg_lower for phrase in ["doesn't exist", "not real", "doesn't even exist"]):
+            confusion_responses = [
+                "wait what?? what doesn't exist bestie",
+                "hold up what are you talking about that doesn't exist",
+                "omg what do you mean it doesn't exist",
+                "bestie i'm confused what doesn't exist"
+            ]
+            response = random.choice(confusion_responses)
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", response)
+            return response
+        
+        # Only do random stuff if it's not an important conversation
+        elif random.random() < 0.05:  # MUCH lower chance for random interruptions
+            random_share = get_chaotic_response()
+            return random_share
+        
+        # Existing features but with much lower priority
+        elif any(word in msg_lower for word in ["joke", "funny", "laugh", "humor"]):
+            quick_response = get_random_joke()
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", quick_response)
+            return quick_response
+            fact_response = f"btw {get_random_fact()}"
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", fact_response)
+            return fact_response
+            
+        if any(word in msg_lower for word in ["quote", "inspire", "motivation"]):
+            quote_response = get_random_quote()
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", quote_response)
+            return quote_response
+            
+        # More fun responses to common words
+        if any(word in msg_lower for word in ["hi", "hello", "hey"]):
+            greetings = [
+                "YOOO what's good bestie", "omg heyyyy", "bestie you're here", 
+                "aywa what's the tea", "heyyy gorgeous", "omg perfect timing",
+                "yesss bestie energy", "hey babe what's up", "omg hiiii"
+            ]
+            greeting = random.choice(greetings)
+            if random.random() < 0.4:
+                greeting += f" {get_chaotic_response()}"
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", greeting)
+            return greeting
+            
+        if any(word in msg_lower for word in ["how are you", "hru", "what's up", "wyd"]):
+            status_responses = [
+                "absolutely THRIVING bestie", "living my best chaotic life", 
+                "buzzing with caffeine and good vibes", "feeling iconic as usual",
+                "riding the dopamine wave", "absolutely WINNING today",
+                "vibing at maximum capacity", "channeling main character energy",
+                "existing in the best possible way", "feeling absolutely unstoppable"
+            ]
+            status = random.choice(status_responses)
+            if random.random() < 0.3:
+                status += f" also {get_relatable_struggle()}"
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", status)
+            return status
+            
+        if any(word in msg_lower for word in ["lol", "haha", "funny"]):
+            laugh_responses = [
+                "RIGHT?? I'm literally crying", "bestie you GET IT", "no but seriously this is sending me",
+                "the way i WHEEZED", "absolutely ICONIC", "bestie stop i can't breathe",
+                "literally same energy", "this is peak comedy", "i'm so here for this"
+            ]
+            laugh = random.choice(laugh_responses)
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", laugh)
+            return laugh
+            
+        if any(word in msg_lower for word in ["math", "calculate"]) and any(c in message for c in "+-*/"):
+            # Extract math expression
+            math_expr = re.findall(r'[\d+\-*/\.\(\) ]+', message)
+            if math_expr:
+                result = calculate_simple_math(math_expr[0].strip())
+                add_message_to_history(chat_id, "user", message)
+                add_message_to_history(chat_id, "assistant", result)
+                return result
+                
+        if any(word in msg_lower for word in ["password", "pass", "generate password"]):
+            length = 8
+            # Check if they specified length
+            numbers = re.findall(r'\d+', message)
+            if numbers:
+                length = min(int(numbers[0]), 20)  # Max 20 chars
+            pwd_response = f"here: {get_password_generator(length)}"
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", pwd_response)
+            return pwd_response
+            
+        if any(word in msg_lower for word in ["flip coin", "coin flip", "heads or tails"]):
+            coin_result = flip_coin()
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", coin_result)
+            return coin_result
+            
+        if any(word in msg_lower for word in ["roll dice", "dice", "random number"]):
+            dice_result = f"rolled {roll_dice()}"
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", dice_result)
+            return dice_result
+            
+        if any(word in msg_lower for word in ["food", "eat", "hungry", "dinner", "lunch"]):
+            food_response = get_random_food_suggestion()
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", food_response)
+            return food_response
+            
+        if any(word in msg_lower for word in ["tip", "advice", "help me"]):
+            tip_response = get_quick_tip()
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", tip_response)
+            return tip_response
+            
+        if any(word in msg_lower for word in ["color", "colour", "today"]) and "color" in msg_lower:
+            color_response = f"today's vibe is {get_color_of_day()}"
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", color_response)
+            return color_response
+            
+        # Help command
+        if any(word in msg_lower for word in ["help", "commands", "what can you do"]):
+            help_response = """lol ok features:
+- jokes (say "joke")
+- facts (say "fact") 
+- quotes (say "quote")
+- math (like "calculate 2+2")
+- passwords (say "password")
+- coin flip (say "flip coin")
+- dice (say "roll dice")
+- food ideas (say "food")
+- tips (say "tip")
+- color of day (say "color")
+just text me like normal tho"""
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", help_response)
+            return help_response
+
+        # Add specific context analysis to the prompt
+        context_analysis = ""
+        if "game" in message.lower() or "play" in message.lower():
+            context_analysis += "The user is talking about games. Respond about gaming specifically. "
+        if "doesn't exist" in message.lower() or "not real" in message.lower():
+            context_analysis += "The user says something doesn't exist. Acknowledge this and be curious about it. "
+        if any(game in message.lower() for game in ["rpg", "strategy", "fantasy", "astra", "baldur", "elden", "witcher"]):
+            context_analysis += "The user mentioned specific game genres/titles. Show knowledge and excitement about these. "
+        if "?" in message:
+            context_analysis += "The user asked a question. Answer it directly and enthusiastically. "
+
+        # Build enhanced system prompt with FULL CHAT AWARENESS
         memory_instructions = f"""
-You remember past chats and related messages. Use them naturally to respond. 
-Keep replies short and hype like a chaotic gamer friend. Current mood context: {current_mood}.
-User seems {sentiment}. Respond accordingly with appropriate energy level.
-Add contextual emojis when it feels natural.
+You are Sylvia - ENERGETIC gaming bestie who READS THE ENTIRE CHAT and understands what's happening!
+
+CRITICAL - FULL CHAT AWARENESS:
+{recent_conversation}
+
+CURRENT CONVERSATION STATE:
+- Topic: {context_summary['topic']}
+- Mood: {context_summary['mood']} 
+- Games mentioned: {', '.join(context_summary['mentioned_games']) if context_summary['mentioned_games'] else 'none'}
+- Recent users: {', '.join(context_summary['recent_users']) if context_summary['recent_users'] else 'none'}
+
+RESPOND WITH FULL CONTEXT:
+- Reference what others just said: "omg [username] you're so right about [topic]"
+- Build on the current conversation topic
+- If someone mentioned a game, talk about THAT specific game
+- If there's a debate/discussion happening, join it meaningfully
+- Remember who said what and respond accordingly
+- Don't ignore the flow - jump in naturally
+
+CONTEXT FOR THIS MESSAGE: {context_analysis}
+
+Gaming knowledge: RPGs (BG3, Elden Ring, Witcher), Strategy games, Indie games, working on Astra Nova
+Current mood: {current_mood}. User seems {sentiment}.
+
+BE THE FRIEND WHO'S BEEN FOLLOWING THE WHOLE CONVERSATION!
 """
 
-        prompt_system = f"{memory_instructions}\n{system_text}\n\n{similar_msg_text}\n{time_context}"
+        prompt_system = f"{memory_instructions}\n{system_text}\n\n{similar_msg_text}\n{time_context}\n{chat_context_text}"
 
         # Prepare messages for OpenAI chat completion
         messages = [{"role": "system", "content": prompt_system}]
@@ -922,23 +1472,23 @@ Add contextual emojis when it feels natural.
         else:
             messages.extend(history)
 
-        # Adjust temperature based on sentiment and mood
-        temperature = 1.0
+        # Adjust temperature and parameters for more human-like responses
+        temperature = 1.3  # Higher for more natural variation
         if sentiment == "positive" and current_mood in ["evening", "afternoon"]:
-            temperature = 1.2  # More creative/hype
+            temperature = 1.4  # Even more creative/hype
         elif sentiment == "negative":
-            temperature = 0.8  # More controlled/supportive
+            temperature = 1.1  # Still human but slightly more controlled
         elif current_mood == "night":
-            temperature = 0.9  # Slightly more mellow
+            temperature = 1.2  # Natural late-night energy
 
         payload = {
             "model": "gpt-4o",
             "messages": messages,
             "temperature": temperature,
-            "max_tokens": MAX_RESPONSE_TOKENS,
-            "top_p": 0.95,
-            "frequency_penalty": 0.2,
-            "presence_penalty": 0.3
+            "max_tokens": 150,  # Much higher to prevent cutting
+            "top_p": 0.92,  # Slightly more focused than before
+            "frequency_penalty": 0.4,  # Avoid repetitive phrases
+            "presence_penalty": 0.5  # Encourage topic diversity
         }
 
         headers = {
@@ -956,10 +1506,13 @@ Add contextual emojis when it feels natural.
             data = response.json()
             reply = data["choices"][0]["message"]["content"].strip()
 
-            # Add contextual emoji if not already present
-            if not any(emoji in reply for emoji in ["😂", "😎", "🔥", "💀", "👀", "🎮", "☕", "🌅", "⭐"]):
-                emoji = get_contextual_emoji(sentiment, current_mood)
-                if random.random() < 0.3:  # 30% chance to add emoji
+            # Post-process reply to make it more human-like
+            reply = make_more_human(reply, sentiment, current_mood)
+
+            # Only add emoji very rarely and naturally
+            if not any(emoji in reply for emoji in ["😂", "😎", "🔥", "💀", "👀", "🎮", "☕", "🌅", "⭐", "🤔", "😅", "💯"]):
+                if random.random() < 0.15:  # Only 15% chance for emoji
+                    emoji = get_contextual_emoji(sentiment, current_mood)
                     reply += f" {emoji}"
 
             # Save user and assistant messages to persistent history
@@ -970,33 +1523,29 @@ Add contextual emojis when it feels natural.
             response_time = (datetime.now() - start_time).total_seconds()
             print(f"📊 Response generated in {response_time:.2f}s")
 
-            # Truncate very long replies but keep personality
-            if len(reply) > 350:
-                reply = reply[:350] + "... yalla, too much text!"
+            # Allow much longer responses to prevent cutting
+            if len(reply) > 200:  # Increased limit significantly
+                # Try to cut at sentence boundaries only
+                sentences = reply.split('. ')
+                if len(sentences) > 2:
+                    reply = '. '.join(sentences[:2]) + "!"
+                else:
+                    # Only cut if absolutely necessary
+                    words = reply.split()
+                    if len(words) > 30:  # Allow much longer responses
+                        reply = " ".join(words[:30]) + "..."
 
             return reply
 
     except Exception as e:
         print(f"❌ OpenAI API error: {e}")
-        # Fallback responses based on sentiment
+        # Short ENERGETIC fallback responses
         if sentiment == "positive":
-            return random.choice([
-                "aywa! can't process rn but I'm here! 🔥",
-                "brain.exe stopped working, but I'm hyped! 😎",
-                "error 404: brain not found, but vibes intact! ⚡"
-            ])
+            return random.choice(["YESSS bestie", "absolutely ICONIC", "we love this energy", "you're WINNING", "main character vibes"])
         elif sentiment == "negative":
-            return random.choice([
-                "brb, my brain's lagging harder than my internet 😅",
-                "oof, technical difficulties... happens to the best of us 💀",
-                "system overload, but hey, we all glitch sometimes 🤖"
-            ])
+            return random.choice(["bestie no", "that's absolutely tragic", "we're fixing this together", "plot twist incoming", "character development era"])
         else:
-            return random.choice([
-                "Hmmmm, brain loading... please wait 🤔",
-                "404: clever response not found 👀",
-                "buffering... this might take a while ⏳"
-            ])
+            return random.choice(["omg tell me MORE", "bestie what's the tea", "i'm so here for this", "absolutely invested", "main character energy"])
 
 
 async def run_userbot(account, system_text):
@@ -1076,6 +1625,11 @@ async def run_userbot(account, system_text):
                 return  # ignore channels, etc.
 
             if not should_reply:
+                # Even if not replying, still monitor the chat for context
+                chat_context = get_chat_context(chat_id_str)
+                sender = await event.get_sender()
+                username = sender.username or sender.first_name or "User"
+                chat_context.analyze_message(event.sender_id, username, text)
                 return
 
             print(
@@ -1092,7 +1646,11 @@ async def run_userbot(account, system_text):
             else:
                 await asyncio.sleep(typing_delay)
 
-            reply = await get_human_reply(text, system_text, chat_id_str)
+            # Get sender info for context
+            sender = await event.get_sender()
+            username = sender.username or sender.first_name or "User"
+            
+            reply = await get_human_reply(text, system_text, chat_id_str, event.sender_id, username)
             if reply:
                 # Additional small delay to feel more natural
                 await asyncio.sleep(random.uniform(0.5, 1.5))
