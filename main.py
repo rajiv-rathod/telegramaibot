@@ -5,12 +5,23 @@ import json
 import pdfplumber
 import httpx
 import nest_asyncio
-from datetime import datetime
-from solace_integration import init_solace, cleanup_solace, solace_client
+import time
+import re
+from datetime import datetime, timedelta
+from textblob import TextBlob
+import requests
+
+# Download NLTK data if not present (for sentiment analysis)
+try:
+    import nltk
+    nltk.download('punkt', quiet=True)
+    nltk.download('brown', quiet=True)
+except:
+    print("⚠️ NLTK data download failed - sentiment analysis may not work")
 
 
 def get_current_shift_index():
-    hour = datetime.utcnow().hour
+    hour = datetime.now().hour
     if 6 <= hour < 14:
         return 0
     elif 14 <= hour < 22:
@@ -18,14 +29,89 @@ def get_current_shift_index():
     else:
         return 2
 
+def get_time_based_mood():
+    """Get personality mood based on time of day"""
+    hour = datetime.now().hour
+    
+    if MORNING_HOURS[0] <= hour < MORNING_HOURS[1]:
+        return "morning"  # More energetic, coffee references
+    elif AFTERNOON_HOURS[0] <= hour < AFTERNOON_HOURS[1]:
+        return "afternoon"  # Productive, gaming mode
+    elif EVENING_HOURS[0] <= hour < EVENING_HOURS[1]:
+        return "evening"  # Social, hype mode
+    else:
+        return "night"  # Tired but still gaming, late night vibes
+
+def get_sentiment_analysis(text):
+    """Analyze sentiment of user message"""
+    try:
+        blob = TextBlob(text)
+        polarity = blob.sentiment.polarity  # -1 to 1
+        subjectivity = blob.sentiment.subjectivity  # 0 to 1
+        
+        if polarity > 0.1:
+            return "positive"
+        elif polarity < -0.1:
+            return "negative"
+        else:
+            return "neutral"
+    except:
+        return "neutral"
+
+def get_random_joke():
+    """Get a random gaming/tech joke"""
+    jokes = [
+        "Why do programmers prefer dark mode? Because light attracts bugs! 😂",
+        "How many programmers does it take to change a light bulb? None, that's a hardware problem!",
+        "Why do gamers never get hungry? They always have plenty of bytes! 🎮",
+        "What's a gamer's favorite type of music? 8-bit! 🎵",
+        "Why don't developers ever get cold? They work with Java! ☕",
+        "What do you call a programmer from Finland? Nerdic! 🤓",
+        "Why did the developer go broke? Because he used up all his cache! 💸",
+        "How do you comfort a JavaScript bug? You console it! 🐛"
+    ]
+    return random.choice(jokes)
+
+def get_weather_greeting():
+    """Simple weather-aware greeting (placeholder for weather API)"""
+    greetings = [
+        "hope the weather's not as laggy as my internet rn! 🌤️",
+        "perfect gaming weather today, wallah ☁️",
+        "weather's nice but I'm staying inside to game 🌞",
+        "rainy day = perfect raid day 🌧️",
+        "sunny outside but I got my blinds closed for optimal gaming 🎮"
+    ]
+    return random.choice(greetings)
+
+def get_contextual_emoji(sentiment, mood):
+    """Get contextual emoji based on sentiment and time"""
+    if sentiment == "positive":
+        if mood == "morning":
+            return random.choice(["☕", "🌅", "😊", "💪"])
+        elif mood == "evening":
+            return random.choice(["🔥", "🎉", "✨", "🎮"])
+        else:
+            return random.choice(["😎", "🚀", "⭐", "💯"])
+    elif sentiment == "negative":
+        return random.choice(["😅", "🙄", "😤", "💀"])
+    else:
+        return random.choice(["🤔", "👀", "🎯", "⚡"])
+
+def simulate_typing_delay(text):
+    """Calculate realistic typing delay based on text length"""
+    words = len(text.split())
+    base_delay = random.uniform(MIN_RESPONSE_DELAY, MAX_RESPONSE_DELAY)
+    typing_delay = words * TYPING_DELAY_PER_WORD
+    return base_delay + typing_delay
+
 
 from difflib import SequenceMatcher
 from telethon import TelegramClient, events
 from telethon.errors import SessionPasswordNeededError
 
-# OpenAI Credentials — Replace with your actual keys!
-OPENAI_API_KEY = "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"
-OPENAI_ORG_ID = "org-paafvnW7n982HGk1bIbQP2iy"
+# OpenAI Credentials — Use environment variables for security
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_ORG_ID = os.getenv("OPENAI_ORG_ID", "")
 
 nest_asyncio.apply()
 
@@ -35,10 +121,21 @@ with open("accounts.json") as f:
 if len(ACCOUNTS) != 3:
     raise ValueError("❌ You must define exactly 3 userbots in accounts.json")
 
-REPLY_PROBABILITY = 0.5
-CONTEXT_MSG_LIMIT = 12  # number of past messages to keep in memory
-MAX_PROMPT_MSGS = 8
-MAX_RESPONSE_TOKENS = 150
+REPLY_PROBABILITY = 0.4  # Slightly more responsive
+CONTEXT_MSG_LIMIT = 15  # Better memory
+MAX_PROMPT_MSGS = 10  # More context
+MAX_RESPONSE_TOKENS = 200  # Longer responses when needed
+
+# Human-like behavior settings
+MIN_RESPONSE_DELAY = 1.0  # Minimum delay before responding
+MAX_RESPONSE_DELAY = 4.0  # Maximum delay before responding
+TYPING_DELAY_PER_WORD = 0.15  # Delay per word to simulate typing
+
+# Time-based personality shifts
+MORNING_HOURS = (6, 12)  # 6 AM to 12 PM
+AFTERNOON_HOURS = (12, 18)  # 12 PM to 6 PM  
+EVENING_HOURS = (18, 24)  # 6 PM to 12 AM
+NIGHT_HOURS = (0, 6)  # 12 AM to 6 AM
 
 
 # Load PDF content for Sylvia context
@@ -763,8 +860,12 @@ def find_similar_user_message(chat_id, current_msg, threshold=0.6):
 
 
 async def get_human_reply(message: str, system_text: str, chat_id: str) -> str:
-    start_time = datetime.utcnow()
+    start_time = datetime.now()
     try:
+        # Analyze message sentiment and current mood
+        sentiment = get_sentiment_analysis(message)
+        current_mood = get_time_based_mood()
+        
         # Load full chat history
         history = load_chat_history(chat_id)
         # Add current user message to history (temporarily)
@@ -774,11 +875,31 @@ async def get_human_reply(message: str, system_text: str, chat_id: str) -> str:
         similar_msg = find_similar_user_message(chat_id, message)
         similar_msg_text = f"Related past message: '{similar_msg}'" if similar_msg else "No related past messages."
 
-        # Build system prompt with memory instructions + Sylvia base + PDF + related msg
-        memory_instructions = """
-You remember past chats and related messages. Use them naturally to respond. Keep replies short and hype like a chaotic gamer friend.
+        # Add time and sentiment context
+        time_context = f"Current time mood: {current_mood}, User sentiment: {sentiment}"
+        
+        # Special responses for certain patterns
+        if any(word in message.lower() for word in ["joke", "funny", "laugh", "humor"]):
+            quick_response = get_random_joke()
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", quick_response)
+            return quick_response
+            
+        if any(word in message.lower() for word in ["weather", "outside", "sunny", "rainy"]):
+            weather_response = f"yalla, {get_weather_greeting()}"
+            add_message_to_history(chat_id, "user", message)
+            add_message_to_history(chat_id, "assistant", weather_response)
+            return weather_response
+
+        # Build enhanced system prompt with memory instructions + time context
+        memory_instructions = f"""
+You remember past chats and related messages. Use them naturally to respond. 
+Keep replies short and hype like a chaotic gamer friend. Current mood context: {current_mood}.
+User seems {sentiment}. Respond accordingly with appropriate energy level.
+Add contextual emojis when it feels natural.
 """
-        prompt_system = f"{memory_instructions}\n{system_text}\n\n{similar_msg_text}"
+
+        prompt_system = f"{memory_instructions}\n{system_text}\n\n{similar_msg_text}\n{time_context}"
 
         # Prepare messages for OpenAI chat completion
         messages = [{"role": "system", "content": prompt_system}]
@@ -788,10 +909,19 @@ You remember past chats and related messages. Use them naturally to respond. Kee
         else:
             messages.extend(history)
 
+        # Adjust temperature based on sentiment and mood
+        temperature = 1.0
+        if sentiment == "positive" and current_mood in ["evening", "afternoon"]:
+            temperature = 1.2  # More creative/hype
+        elif sentiment == "negative":
+            temperature = 0.8  # More controlled/supportive
+        elif current_mood == "night":
+            temperature = 0.9  # Slightly more mellow
+
         payload = {
             "model": "gpt-4o",
             "messages": messages,
-            "temperature": 1,
+            "temperature": temperature,
             "max_tokens": MAX_RESPONSE_TOKENS,
             "top_p": 0.95,
             "frequency_penalty": 0.2,
@@ -813,31 +943,47 @@ You remember past chats and related messages. Use them naturally to respond. Kee
             data = response.json()
             reply = data["choices"][0]["message"]["content"].strip()
 
+            # Add contextual emoji if not already present
+            if not any(emoji in reply for emoji in ["😂", "😎", "🔥", "💀", "👀", "🎮", "☕", "🌅", "⭐"]):
+                emoji = get_contextual_emoji(sentiment, current_mood)
+                if random.random() < 0.3:  # 30% chance to add emoji
+                    reply += f" {emoji}"
+
             # Save user and assistant messages to persistent history
             add_message_to_history(chat_id, "user", message)
             add_message_to_history(chat_id, "assistant", reply)
             
-            # Publish metrics to Solace
-            if solace_client:
-                response_time = (datetime.utcnow() - start_time).total_seconds()
-                metrics = {
-                    "response_time_seconds": response_time,
-                    "message_length": len(message),
-                    "reply_length": len(reply),
-                    "chat_id": chat_id,
-                    "model_used": "gpt-4o"
-                }
-                await solace_client.publish_bot_metrics(metrics)
+            # Log response time for monitoring
+            response_time = (datetime.now() - start_time).total_seconds()
+            print(f"📊 Response generated in {response_time:.2f}s")
 
-            # Optional: truncate very long replies (but you might want full)
-            if len(reply) > 300:
-                reply = reply[:300] + "..."
+            # Truncate very long replies but keep personality
+            if len(reply) > 350:
+                reply = reply[:350] + "... yalla, too much text!"
 
             return reply
 
     except Exception as e:
         print(f"❌ OpenAI API error: {e}")
-        return "Hmmmm"
+        # Fallback responses based on sentiment
+        if sentiment == "positive":
+            return random.choice([
+                "aywa! can't process rn but I'm here! 🔥",
+                "brain.exe stopped working, but I'm hyped! 😎",
+                "error 404: brain not found, but vibes intact! ⚡"
+            ])
+        elif sentiment == "negative":
+            return random.choice([
+                "brb, my brain's lagging harder than my internet 😅",
+                "oof, technical difficulties... happens to the best of us 💀",
+                "system overload, but hey, we all glitch sometimes 🤖"
+            ])
+        else:
+            return random.choice([
+                "Hmmmm, brain loading... please wait 🤔",
+                "404: clever response not found 👀",
+                "buffering... this might take a while ⏳"
+            ])
 
 
 async def run_userbot(account, system_text):
@@ -878,7 +1024,7 @@ async def run_userbot(account, system_text):
             # Groups: reply if:
             # 1. mentioned
             # 2. reply to bot
-            # 3. random 30% chance to engage
+            # 3. random chance to engage (adjusted based on time of day)
             elif event.is_group:
                 is_allowed_username = hasattr(
                     chat,
@@ -895,8 +1041,23 @@ async def run_userbot(account, system_text):
                     if reply_msg and reply_msg.sender_id == me.id:
                         is_reply_to_bot = True
 
+                # Adjust reply probability based on time and message content
+                current_probability = REPLY_PROBABILITY
+                current_mood = get_time_based_mood()
+                
+                # More active during evening/afternoon
+                if current_mood in ["evening", "afternoon"]:
+                    current_probability += 0.1
+                elif current_mood == "night":
+                    current_probability -= 0.1
+                    
+                # More likely to respond to gaming/tech keywords
+                gaming_keywords = ["game", "gaming", "play", "raid", "boss", "level", "patch", "update", "tech", "code", "dev"]
+                if any(keyword in text.lower() for keyword in gaming_keywords):
+                    current_probability += 0.2
+
                 should_reply = mentioned or is_reply_to_bot or (
-                    random.random() < REPLY_PROBABILITY)
+                    random.random() < current_probability)
 
             else:
                 return  # ignore channels, etc.
@@ -908,22 +1069,35 @@ async def run_userbot(account, system_text):
                 f"💬 [{'DM' if event.is_private else 'Group: '+chat.title}] {event.sender_id}: {text}"
             )
 
+            # Simulate human-like thinking/typing delay
+            typing_delay = simulate_typing_delay(text)
+            
+            # Show typing indicator if possible (in DMs)
+            if event.is_private:
+                async with client.action(chat, 'typing'):
+                    await asyncio.sleep(min(typing_delay, 5.0))  # Max 5 seconds typing indicator
+            else:
+                await asyncio.sleep(typing_delay)
+
             reply = await get_human_reply(text, system_text, chat_id_str)
             if reply:
-                # Publish message event to Solace
-                if solace_client:
-                    await solace_client.publish_message_event(
-                        chat_id=chat_id_str,
-                        user_id=str(event.sender_id),
-                        message=text,
-                        response=reply
-                    )
-                
-                await asyncio.sleep(random.uniform(1.5, 3.0))
+                # Additional small delay to feel more natural
+                await asyncio.sleep(random.uniform(0.5, 1.5))
                 await event.reply(reply)
 
         except Exception as e:
             print(f"⚠️ Handler error: {e}")
+            # Send a friendly error message occasionally
+            if random.random() < 0.3:
+                error_responses = [
+                    "oops, brain glitched for a sec 🤖",
+                    "error 404: witty response not found 😅",
+                    "brb, rebooting... jk I'm just slow rn 💀"
+                ]
+                try:
+                    await event.reply(random.choice(error_responses))
+                except:
+                    pass
 
     print(f"🤖 Running bot: {account['phone']}")
     await client.run_until_disconnected()
@@ -932,15 +1106,16 @@ async def run_userbot(account, system_text):
 async def main():
     os.makedirs("sessions", exist_ok=True)
     
-    # Initialize Solace Event Mesh
-    await init_solace()
+    # Check if OpenAI credentials are configured
+    if not OPENAI_API_KEY or not OPENAI_ORG_ID:
+        print("⚠️ Warning: OpenAI credentials not configured in environment variables")
+        print("Set OPENAI_API_KEY and OPENAI_ORG_ID environment variables")
     
-    try:
-        index = get_current_shift_index()
-        await run_userbot(ACCOUNTS[index], SYSTEM_TEXTS[index])
-    finally:
-        # Cleanup Solace connection
-        await cleanup_solace()
+    print("🤖 Starting enhanced human-like Telegram AI bot...")
+    print(f"🕐 Current mood: {get_time_based_mood()}")
+    
+    index = get_current_shift_index()
+    await run_userbot(ACCOUNTS[index], SYSTEM_TEXTS[index])
 
 
 if __name__ == "__main__":
