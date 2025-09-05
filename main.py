@@ -141,6 +141,7 @@ NIGHT_HOURS = (0, 6)  # 12 AM to 6 AM
 # Load PDF content for Sylvia context
 def extract_pdf_text(directory="."):
     text = ""
+    print("📚 Loading PDF context files...")
     for file in os.listdir(directory):
         if file.endswith('.pdf'):
             try:
@@ -149,13 +150,25 @@ def extract_pdf_text(directory="."):
                         page_text = page.extract_text()
                         if page_text:
                             text += page_text + "\n"
+                print(f"✅ Loaded {file}")
             except Exception as e:
-                print(f"Error reading {file}: {e}")
-    return text[:8000] + "..." if len(text) > 8000 else text
+                print(f"⚠️ Warning: Could not read {file}: {e}")
+    
+    if text:
+        # Truncate to reasonable size
+        text = text[:8000] + "..." if len(text) > 8000 else text
+        print(f"📄 Total PDF content: {len(text)} characters")
+    else:
+        print("📄 No PDF content found")
+    
+    return text
 
 
-PDF_CONTENT = extract_pdf_text(".")
-print(f"✅ PDF loaded: {len(PDF_CONTENT)} chars")
+try:
+    PDF_CONTENT = extract_pdf_text(".")
+except Exception as e:
+    print(f"⚠️ Could not load PDF content: {e}")
+    PDF_CONTENT = ""
 
 # Sylvia base prompt (insert your full base here)
 BASE_SYLVIA = f"""
