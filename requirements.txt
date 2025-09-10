@@ -6,3 +6,6 @@ textblob
 requests
 python-dotenv
 nltk
+flask
+flask-cors
+werkzeug

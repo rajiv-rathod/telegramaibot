@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram AI Bot Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" id="logo-section">
+                <i class="fas fa-robot me-2"></i>
+                Telegram AI Bot Dashboard
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text">
+                    <span id="bot-status" class="badge bg-danger">Offline</span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-section="overview">
+                                <i class="fas fa-tachometer-alt me-2"></i>Overview
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="personality">
+                                <i class="fas fa-theater-masks me-2"></i>Personality
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="pdfs">
+                                <i class="fas fa-file-pdf me-2"></i>PDF Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="config">
+                                <i class="fas fa-cog me-2"></i>Configuration
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="accounts">
+                                <i class="fas fa-users me-2"></i>Bot Accounts
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="debug">
+                                <i class="fas fa-bug me-2"></i>Debug & Logs
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2" id="page-title">Dashboard Overview</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-success" id="start-bot">
+                                <i class="fas fa-play me-1"></i>Start Bot
+                            </button>
+                            <button type="button" class="btn btn-danger" id="stop-bot">
+                                <i class="fas fa-stop me-1"></i>Stop Bot
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="save-all">
+                            <i class="fas fa-save me-1"></i>Save All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Overview Section -->
+                <div id="overview-section" class="content-section">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Bot Status</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="status-text">Offline</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-robot fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Active Sessions</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="active-sessions">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Messages Today</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="messages-today">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-envelope fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Uptime</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="uptime">0:00:00</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Current Personality</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="current-personality-info">
+                                        <h5 id="current-personality-name">{{ personalities[config.active_personality].name if config.active_personality in personalities else 'Unknown' }}</h5>
+                                        <p class="text-muted" id="current-personality-desc">{{ personalities[config.active_personality].description if config.active_personality in personalities else 'No description' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-outline-primary" onclick="switchSection('personality')">
+                                            <i class="fas fa-theater-masks me-2"></i>Change Personality
+                                        </button>
+                                        <button class="btn btn-outline-secondary" onclick="switchSection('pdfs')">
+                                            <i class="fas fa-file-pdf me-2"></i>Manage PDFs
+                                        </button>
+                                        <button class="btn btn-outline-success" onclick="switchSection('debug')">
+                                            <i class="fas fa-bug me-2"></i>View Logs
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personality Section -->
+                <div id="personality-section" class="content-section" style="display: none;">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Personality Presets</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="personality-list">
+                                        {% for pid, personality in personalities.items() %}
+                                        <div class="personality-item mb-3 p-3 border rounded {% if config.active_personality == pid %}border-primary bg-light{% endif %}" data-personality-id="{{ pid }}">
+                                            <h6>{{ personality.name }}</h6>
+                                            <p class="text-muted small">{{ personality.description }}</p>
+                                            <div class="btn-group-sm">
+                                                <button class="btn btn-primary btn-sm select-personality">Select</button>
+                                                <button class="btn btn-outline-secondary btn-sm edit-personality">Edit</button>
+                                                {% if pid not in ['sylvia_default', 'professional', 'casual_friend', 'tech_expert'] %}
+                                                <button class="btn btn-outline-danger btn-sm delete-personality">Delete</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <button class="btn btn-success w-100" id="add-personality">
+                                        <i class="fas fa-plus me-2"></i>Add Custom Personality
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Personality Editor</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form id="personality-form">
+                                        <div class="mb-3">
+                                            <label for="personality-name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="personality-name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="personality-description" class="form-label">Description</label>
+                                            <input type="text" class="form-control" id="personality-description" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="personality-content" class="form-label">Personality Content</label>
+                                            <textarea class="form-control" id="personality-content" rows="15" placeholder="Enter the full personality prompt here..."></textarea>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary">Save Personality</button>
+                                            <button type="button" class="btn btn-secondary" id="cancel-edit">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF Management Section -->
+                <div id="pdfs-section" class="content-section" style="display: none;">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Upload New PDF</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form id="pdf-upload-form" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label for="pdf-file" class="form-label">Select PDF File</label>
+                                            <input type="file" class="form-control" id="pdf-file" accept=".pdf" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-upload me-2"></i>Upload PDF
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Available PDFs</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="pdf-list">
+                                        {% for pdf in pdfs %}
+                                        <div class="pdf-item mb-3 p-3 border rounded">
+                                            <h6>{{ pdf.name }}</h6>
+                                            <small class="text-muted">
+                                                Size: {{ "%.1f"|format(pdf.size / 1024 / 1024) }} MB | 
+                                                Modified: {{ pdf.modified }}
+                                            </small>
+                                            <div class="mt-2">
+                                                <button class="btn btn-outline-danger btn-sm delete-pdf" data-path="{{ pdf.path }}">
+                                                    <i class="fas fa-trash me-1"></i>Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration Section -->
+                <div id="config-section" class="content-section" style="display: none;">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Bot Configuration</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="config-form">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <h6>Response Behavior</h6>
+                                        <div class="mb-3">
+                                            <label for="reply-probability" class="form-label">Reply Probability</label>
+                                            <input type="range" class="form-range" id="reply-probability" min="0" max="1" step="0.1" value="{{ config.reply_probability }}">
+                                            <div class="form-text">Current: <span id="reply-probability-value">{{ config.reply_probability }}</span></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="context-msg-limit" class="form-label">Context Message Limit</label>
+                                            <input type="number" class="form-control" id="context-msg-limit" value="{{ config.context_msg_limit }}" min="1" max="50">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="max-response-tokens" class="form-label">Max Response Tokens</label>
+                                            <input type="number" class="form-control" id="max-response-tokens" value="{{ config.max_response_tokens }}" min="50" max="500">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <h6>Timing Settings</h6>
+                                        <div class="mb-3">
+                                            <label for="min-response-delay" class="form-label">Min Response Delay (seconds)</label>
+                                            <input type="number" class="form-control" id="min-response-delay" value="{{ config.min_response_delay }}" min="0" max="10" step="0.1">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="max-response-delay" class="form-label">Max Response Delay (seconds)</label>
+                                            <input type="number" class="form-control" id="max-response-delay" value="{{ config.max_response_delay }}" min="0" max="30" step="0.1">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="typing-delay" class="form-label">Typing Delay per Word (seconds)</label>
+                                            <input type="number" class="form-control" id="typing-delay" value="{{ config.typing_delay_per_word }}" min="0" max="1" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6>Other Settings</h6>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="debug-mode" {% if config.debug_mode %}checked{% endif %}>
+                                            <label class="form-check-label" for="debug-mode">Debug Mode</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Configuration</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bot Accounts Section -->
+                <div id="accounts-section" class="content-section" style="display: none;">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Bot Accounts</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="accounts-list">
+                                {% for account in accounts %}
+                                <div class="account-item mb-3 p-3 border rounded">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">API ID</label>
+                                            <input type="text" class="form-control account-api-id" value="{{ account.api_id }}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">API Hash</label>
+                                            <input type="text" class="form-control account-api-hash" value="{{ account.api_hash }}">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Phone</label>
+                                            <input type="text" class="form-control account-phone" value="{{ account.phone }}">
+                                        </div>
+                                        <div class="col-md-1 d-flex align-items-end">
+                                            <button class="btn btn-outline-danger btn-sm remove-account">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button class="btn btn-success" id="add-account">
+                                <i class="fas fa-plus me-2"></i>Add Account
+                            </button>
+                            <button class="btn btn-primary ms-2" id="save-accounts">Save Accounts</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debug & Logs Section -->
+                <div id="debug-section" class="content-section" style="display: none;">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Debug & Logs</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <button class="btn btn-outline-primary" id="refresh-logs">
+                                    <i class="fas fa-sync me-2"></i>Refresh Logs
+                                </button>
+                                <button class="btn btn-outline-secondary" id="clear-logs">
+                                    <i class="fas fa-trash me-2"></i>Clear Logs
+                                </button>
+                            </div>
+                            <div id="logs-container" class="border p-3 bg-dark text-light" style="height: 400px; overflow-y: auto; font-family: monospace;">
+                                <div id="logs-content">
+                                    Loading logs...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
