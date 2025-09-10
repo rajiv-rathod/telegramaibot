@@ -164,11 +164,3 @@ sessions/
 chat_histories/
 *.session
 accounts.json
-
-# Dashboard temporary files
-pdf_storage/
-main.py.backup
-dashboard/static/images/*.png
-dashboard/static/images/*.jpg
-dashboard/static/images/*.jpeg
-dashboard/static/images/*.gif
