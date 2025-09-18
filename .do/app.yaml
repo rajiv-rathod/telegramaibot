@@ -1,0 +1,24 @@
+name: telegramaibot
+services:
+- name: userbot-worker
+  source_dir: /
+  github:
+    repo: rajiv-rathod/telegramaibot
+    branch: main
+  run_command: python main.py
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: OPENAI_API_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: OPENAI_ORG_ID
+    scope: RUN_TIME
+    type: SECRET
+  - key: PYTHONPATH
+    scope: RUN_TIME
+    value: /app
+  - key: ENVIRONMENT
+    scope: RUN_TIME
+    value: production
