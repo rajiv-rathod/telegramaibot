@@ -1,7 +1,0 @@
-# Vercel-specific requirements (lighter than original)
-httpx
-pdfplumber
-textblob
-requests
-python-dotenv
-nltk

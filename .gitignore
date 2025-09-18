@@ -164,3 +164,4 @@ sessions/
 chat_histories/
 *.session
 accounts.json
+.vercel
